@@ -212,9 +212,9 @@ h3 { font: 700 1rem/1.3 var(--body); }
 /* drag-to-match cards (What Survived?) and two-column play areas */
 .split { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); align-items: start; }
 .aside { display: grid; gap: 12px; align-content: start; min-width: 0; }
-.match { --rowh: 74px; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 0 8px; min-width: 0; }
+.match { --rowh: 74px; display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr); gap: 0 8px; min-width: 0; }
 .fixed, .sort { display: grid; gap: 7px; grid-auto-rows: var(--rowh); }
-.fixed li { display: flex; align-items: center; gap: 8px; padding: 0 10px; min-width: 0; border-radius: 12px 3px 3px 12px; background: linear-gradient(#EFEADF, #C6C0B2); color: #2A2620; font-weight: 800; font-size: 0.9rem; line-height: 1.15; box-shadow: 0 3px 0 #7E786B; }
+.fixed li { grid-row: span 2; display: flex; align-items: center; gap: 8px; padding: 0 10px; min-width: 0; border-radius: 12px 3px 3px 12px; background: linear-gradient(#EFEADF, #C6C0B2); color: #2A2620; font-weight: 800; font-size: 0.9rem; line-height: 1.15; box-shadow: 0 3px 0 #7E786B; }
 .fixed .ico { width: 24px; height: 24px; }
 .sort-card { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 0 8px 0 12px; border-radius: 3px 12px 12px 3px; color: var(--glaze); background: linear-gradient(#E08A56, #BD6235); border: 1px solid #7A3B1C; box-shadow: 0 3px 0 #7A3B1C, 0 8px 16px rgba(0, 0, 0, 0.3); cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; transition: transform 0.16s; }
 .sort-card.drag { transition: none; z-index: 3; cursor: grabbing; box-shadow: 0 0 0 2px var(--gold), 0 16px 30px rgba(0, 0, 0, 0.55); }
@@ -227,7 +227,7 @@ h3 { font: 700 1rem/1.3 var(--body); }
 .sort-card.is-correct { background: linear-gradient(#A2E3B6, #62BC82); border-color: #2D7A49; box-shadow: 0 3px 0 #2D7A49; }
 .sort-card.is-wrong { background: linear-gradient(#F6AA9D, #DB6F5F); border-color: #8F2F23; box-shadow: 0 3px 0 #8F2F23; }
 .sort-card .mark { background: var(--glaze); color: #fff; }
-@media (min-width: 620px) { .match { --rowh: 56px; } .nudges { flex-direction: row; gap: 4px; } .nudge { height: 34px; } }
+@media (min-width: 620px) { .match { --rowh: 50px; } .nudges { flex-direction: row; gap: 4px; } .nudge { height: 34px; } }
 .cap { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
 .review { display: grid; gap: 10px; }
 .review:empty { display: none; }
@@ -324,11 +324,12 @@ a { color: var(--gold); font-weight: 700; }
 @media (min-width: 900px) {
   .split { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 22px; }
   .final { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
+  .split.wide { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); }
 }
 /* short screens (iPad landscape inside the app frame): tighten the vertical rhythm */
 @media (max-height: 800px) and (min-width: 700px) {
   .panel { gap: 11px; padding-block: 14px 16px; }
-  .match { --rowh: 50px; }
+  .match { --rowh: 42px; }
   .badge { width: 44px; height: 44px; }
   .scroll { padding-block: 12px; }
   .sentences li { line-height: 1.9; }
@@ -448,7 +449,6 @@ const ln = (d, color = P.line, w = 0.6, extra = '') => `<path d="${d}" fill="non
 const tube = (d, w, color) => ln(d, P.line, w + 1.8) + ln(d, color, w);
 const dot = (x, y, r, fill) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" ${OL}/>`;
 const grp = (x, y, k, inner, flip) => `<g transform="translate(${x} ${y}) scale(${flip ? -k : k} ${k})">${inner}</g>`;
-const icoC = (name, x, y, k, color) => `<g transform="translate(${x} ${y}) scale(${k})" color="${color}">${ICONS[name]}</g>`;
 const wavesC = (x, y, flip, k = 1) => grp(x, y, k, ln('M0 -6q5 6 0 12M7 -11q9 11 0 22M14 -16q13 16 0 32', P.gold, 1.6), flip);
 
 const INSTC = {
@@ -567,7 +567,6 @@ const spear = (x, top = -128) => tube(`M${x} ${top}V0`, 1.5, P.wood) + fl(`M${x 
 const thrust = tube('M-26 -113L44 -97', 1.5, P.wood) + fl('M43 -99.6L55 -94.6L42.4 -94.4Z', '#D8DCE2');
 const sword = tube('M-6 -108L7 -128', 2.2, '#D8DCE2') + ln('M-9 -105l6 -3', P.gold, 2);
 const shieldC = (x, y, r, c) => dot(x, y, r, P.gold) + dot(x, y, r * 0.8, c) + `<path d="M${x} ${y - r * 0.55}l${r * 0.16} ${r * 0.36} ${r * 0.4} ${r * 0.04}-${r * 0.3} ${r * 0.27} ${r * 0.08} ${r * 0.4}-${r * 0.34}-${r * 0.2}-${r * 0.34} ${r * 0.2} ${r * 0.08}-${r * 0.4}-${r * 0.3}-${r * 0.27} ${r * 0.4}-${r * 0.04}z" fill="${P.white}" stroke="${P.line}" stroke-width="0.4"/>`;
-const hammer = (big) => tube(big ? 'M-6 -108L8 -126' : 'M-6 -108L5 -122', 2.2, P.wood) + fl(big ? 'M0 -138l18 10-6 10-18-10z' : 'M1 -130l11 6-4 7-11-6z', P.iron);
 function columnC(x, top) {
   return fl(`M${x - 7} 170V${top + 8}h14V170z`, P.stone) + ln(`M${x - 3.5} 168V${top + 10}M${x} 168V${top + 10}M${x + 3.5} 168V${top + 10}`, P.dstone, 0.8) + fl(`M${x - 11} ${top + 8}v-5h22v5z`, P.stone) + dot(x - 10, top + 2, 3.4, P.stone) + dot(x + 10, top + 2, 3.4, P.stone) + fl(`M${x - 10} 170v-5h20v5z`, P.stone);
 }
@@ -578,8 +577,6 @@ function templeC() {
     + fl('M-36 -51.6h72v6h-72z', P.cream) + fl('M-36 -56h72v4.4h-72z', P.blue) + ln('M-30 -56v4.4M-18 -56v4.4M-6 -56v4.4M6 -56v4.4M18 -56v4.4M30 -56v4.4', P.red, 2.4)
     + fl('M-39 -56L0 -73L39 -56Z', P.red) + dot(0, -62, 3.4, P.gold) + dot(0, -74.5, 2.6, P.gold) + dot(-39, -57.5, 2.2, P.gold) + dot(39, -57.5, 2.2, P.gold);
 }
-const archC = () => `<path fill-rule="evenodd" d="M-32 0V-76h64V0zM-12 0V-38a12 12 0 0 1 24 0V0z" fill="${P.stone}" ${OL}/>` + fl('M-28 -73h56v13h-56z', '#BDB39C') + ln('M-23 -69h46M-23 -65h36', P.ink, 1.1) + fl('M-35 -79h70v4h-70z', P.stone) + ln('M-32 -56h64', P.dstone, 1) + fl('M-3 -53l3 -5 3 5v4h-6z', P.gold)
-  + ln('M-25 -54V0M-19 -54V0M19 -54V0M25 -54V0', P.dstone, 0.9);
 function shipC() {
   let oars = '', sh = '';
   for (let i = 0; i < 6; i++) { oars += tube(`M${-24 + i * 11} 4L${-31 + i * 11} 20`, 1.2, P.bone); sh += dot(-26 + i * 11, -9, 3.6, [P.red, P.gold, P.blue][i % 3]); }
@@ -614,8 +611,6 @@ const ART = {
   arena: () => instC('Hydraulis', 50, 127, 1.05) + F(112, 1.0, { c1: P.blue, c2: P.gold, pose: 'reach' }, true)
     + F(188, 1.08, { nude: 1, helmet: 1, stride: 1, pose: 'strike', mid: sword, front: shieldC(27, -64, 11, P.red) })
     + F(264, 1.08, { nude: 1, helmet: 1, stride: 1, c2: P.blue, pose: 'strike', mid: sword, front: fl('M19 -84h15a2 2 0 0 1 2 2v32a2 2 0 0 1 -2 2h-15a2 2 0 0 1 -2 -2v-32a2 2 0 0 1 2 -2z', P.blue) + dot(26.5, -66, 3.4, P.gold) + ln('M26.5 -82v12M26.5 -62v12', P.gold, 1) }, true),
-  chorus: () => `<ellipse cx="182" cy="167" rx="98" ry="6" fill="none" stroke="${P.skin}" stroke-width="1"/>` + F(46, 1.06, { c1: P.cream, cloak: P.red, pose: 'pipe', front: AULOS })
-    + [[122, P.blue], [182, P.red], [242, P.purple]].map(([x, c], i) => F(x, 1.06, { mask: 1, c1: c, c2: P.gold, pose: 'up' }, i === 1)).join(''),
   plato: () => columnC(26, 44) + F(94, 1.16, { beard: 1, cloak: P.blue, pose: 'point', mid: fl('M-15 -49h10a2.6 2.6 0 0 1 0 5.2h-10a2.6 2.6 0 0 1 0 -5.2z', P.cream) })
     + S(182, 0.98, { c1: P.cream, c2: P.red }, true) + S(254, 0.98, { c1: P.cream, c2: P.blue, pose: 'hold', mid: HELD.lyreS }, true),
   cornicen: () => F(100, 1.2, { armor: 1, helmet: 1, pose: 'hold', mid: HELD.cornu }) + wavesC(176, 62)
@@ -629,8 +624,6 @@ const ART = {
   mousike: () => F(56, 1.14, { female: 1, bun: 1, c1: P.cream, cloak: P.red, pose: 'hold', mid: HELD.lyre })
     + F(150, 1.14, { beard: 1, cloak: P.blue, pose: 'hold', mid: fl('M14 -86h17v25h-17z', P.cream) + ln('M17 -81h11M17 -76.6h11M17 -72.2h11M17 -67.8h8', P.dwood, 0.9) + dot(14, -86, 1.6, P.wood) + dot(14, -61, 1.6, P.wood) })
     + ln('M218 62q-14 14 -4 30M266 62q14 14 4 30', P.gold, 1.6) + F(242, 1.14, { female: 1, bun: 1, c1: P.purple, c2: P.gold, pose: 'up' }),
-  imports: () => grp(56, 150, 1, shipC()) + seaC(0, 120, 156) + F(160, 1.04, { c1: P.cream, cloak: P.blue, pose: 'hold', mid: HELD.kithara })
-    + F(206, 1.04, { c1: P.red, c2: P.gold, mid: tube('M11 -47L20 -24', 1.8, P.bone) + tube('M11 -47L14 -22', 1.8, P.bone) }) + grp(262, 170, 1, archC()),
   /* A Song for Every Occasion */
   odyssey: () => starsC([[130, 34], [176, 26, 1.6], [246, 40], [284, 28], [108, 58]]) + grp(214, 142, 1.12, shipC()) + seaC(112, 300, 148) + S(58, 1.08, { beard: 1, c1: P.cream, cloak: P.blue, pose: 'hold', seat: 'rock', mid: HELD.lyreS }),
   iliad: () => F(40, 1.02, { beard: 1, cloak: P.red, pose: 'hold', mid: HELD.lyre }) + F(148, 1.08, { armor: 1, helmet: 1, stride: 1, pose: 'strike', mid: thrust, front: shieldC(25, -62, 14, P.red) })
@@ -639,9 +632,6 @@ const ART = {
     + S(230, 1.04, { female: 1, bun: 1, c1: P.blue, c2: P.gold, pose: 'offer', front: wreathC(29, -70, 6) }, true),
   procession: () => grp(236, 170, 1.22, templeC()) + F(40, 1.0, { wreath: 1, c1: P.red, c2: P.gold, pose: 'offer', front: kylixC(29, -64, 0.5) }) + F(90, 1.0, { wreath: 1, female: 1, bun: 1, c1: P.blue, c2: P.gold, pose: 'offer', front: wreathC(29, -82, 6) })
     + F(140, 1.0, { wreath: 1, beard: 1, cloak: P.purple, pose: 'offer', front: ln('M28 -78Q30 -98 26 -112', P.dgreen, 1.6) + [[-88, 20], [-96, -20], [-104, 20], [-110, -10]].map(([y, a]) => `<ellipse cx="28" cy="${y}" rx="5" ry="1.9" transform="rotate(${a - 60} 28 ${y})" fill="${P.green}" stroke="${P.line}" stroke-width="0.4"/>`).join('') }),
-  wallsong: () => fl('M124 26h172v144H124z', P.stone) + ln('M124 74h172M124 122h172M182 26v48M240 26v48M152 74v48M210 74v48M268 74v48M182 122v48M240 122v48', P.dstone, 1)
-    + marksRowC(134, 290, 38) + textRowC(134, 286, 52) + marksRowC(134, 290, 86) + textRowC(134, 286, 100) + marksRowC(134, 230, 134) + textRowC(134, 226, 148)
-    + F(64, 1.14, { short: 1, c1: P.red, c2: P.gold, pose: 'strike', mid: hammer(false), front: tube('M28 -64L42 -67', 2, P.iron) }) + starsC([[112, 90, 1.4], [116, 100, 1], [108, 104, 1.2]]),
   victory: () => F(40, 1.0, { beard: 1, cloak: P.blue, pose: 'hold', mid: HELD.lyre }) + fl('M112 170v-9h64v9z', P.stone)
     + F(144, 1.14, { nude: 1, wreath: 1, pose: 'up', mid: ln('M15 -110Q20 -130 12 -146', P.dgreen, 1.6) + [[-120, 30], [-128, -30], [-136, 30], [-142, -20]].map(([y, a]) => `<ellipse cx="15" cy="${y}" rx="6" ry="2" transform="rotate(${a - 70} 15 ${y})" fill="${P.green}" stroke="${P.line}" stroke-width="0.4"/>`).join('') }, false, 161)
     + F(222, 1.0, { female: 1, bun: 1, c1: P.red, c2: P.gold, pose: 'up' }) + F(270, 1.0, { female: 1, bun: 1, c1: P.blue, c2: P.gold, pose: 'up' }, true),
@@ -657,18 +647,8 @@ const ART = {
   twothirds: () => fl('M16 84h268a4 4 0 0 1 4 4v14a4 4 0 0 1 -4 4H16a4 4 0 0 1 -4 -4V88a4 4 0 0 1 4 -4z', P.wood) + ln('M20 95h260', P.dwood, 1) + fl('M24 44h8v41h-8z', P.gold) + fl('M268 44h8v41h-8z', P.gold)
     + ln('M28 54H272', P.white, 1, 'opacity="0.55"') + ln('M28 54H190.7', '#FFE9A8', 5, 'opacity="0.35"') + ln('M28 54H190.7', P.white, 2.6) + fl('M179 84L190.7 50L202.4 84Z', P.gold)
     + fl('M28 126h80v20H28z', P.gold) + fl('M110.7 126h80v20h-80z', P.gold) + `<rect x="193.4" y="126" width="78.6" height="20" fill="none" stroke="${P.gold}" stroke-width="1.6" stroke-dasharray="4 4"/>`,
-  hammers: () => fl('M128 170v-22h44v22z', P.wood) + fl('M106 124h86l-14 11h-12v13h-32v-13h-10q-12 -1 -18 -11z', P.iron) + ln('M112 127h74', P.white, 1, 'opacity="0.5"') + wavesC(160, 92, false, 0.9) + wavesC(140, 92, true, 0.9)
-    + starsC([[150, 110, 1.6], [138, 104, 1.2], [164, 106, 1.2]]) + F(66, 1.14, { short: 1, beard: 1, c1: P.red, c2: P.gold, pose: 'strike', mid: hammer(true) }) + F(236, 1.06, { short: 1, c1: P.blue, c2: P.gold, pose: 'strike', mid: hammer(false) }, true),
-  /* Instruments */
-  aulosArt: () => F(76, 1.36, { c1: P.cream, cloak: P.red, pose: 'pipe', front: AULOS }) + wavesC(140, 70) + instC('Aulos', 232, 94, 1.4),
   brass: () => F(52, 1.12, { armor: 1, helmet: 1, pose: 'blow', front: TUBA }) + wavesC(150, 46, false, 0.8) + F(214, 1.16, { armor: 1, helmet: 1, c2: P.blue, pose: 'hold', mid: HELD.cornu }),
   /* Who Is Speaking? */
-  tenth: () => Array.from({ length: 9 }, (_, i) => F(20 + i * 21.5, 0.56, { female: 1, bun: i % 2 === 0, c1: [P.cream, P.blue, P.red, P.purple][i % 4], c2: P.gold, pose: i % 3 === 1 ? 'offer' : 'rest' })).join('')
-    + icoC('star', 242, 22, 0.5, P.gold) + F(252, 1.06, { female: 1, bun: 1, c1: P.cream, cloak: P.red, pose: 'hold', mid: HELD.lyre }),
-  books: () => fl('M10 84h280v7H10z', P.wood) + tube('M22 91v14M278 91v14', 3, P.wood) + Array.from({ length: 9 }, (_, i) => { const x = 30 + i * 30; return i === 4
-      ? dot(x, 70, 13, P.cream) + ln(`M${x - 8} 70a8 8 0 1 1 8 8a5 5 0 1 1 -5 -5`, P.dwood, 1.2) + fl(`M${x + 9} 78l8 7-4 3-7-6z`, P.red)
-      : `<circle cx="${x}" cy="70" r="12.4" fill="none" stroke="${P.skin}" stroke-width="1.3" stroke-dasharray="3 4" opacity="0.8"/>`; }).join('')
-    + [['M28 112l34-6 9 15-12 20-33 4-8-18z', 'M32 122h24M30 131h22'], ['M100 108l36 4-3 25-27 9-12-15z', 'M106 119h22M106 128h16'], ['M172 112l30-8 12 21-15 18-27-6z', 'M178 121h22M181 130h15'], ['M236 110l28 3 6 21-21 12-18-12z', 'M240 121h18M243 130h12']].map(([a, b]) => fl(a, P.cream) + ln(b, P.dwood, 1.4)).join(''),
   ratio: () => ln('M26 148V40l104 108z', P.line, 7) + ln('M26 148V40l104 108z', P.gold, 4.6) + ln('M26 131h17v17', P.gold, 2)
     + [[58, 120], [96, 60], [134, 80]].map(([y, w]) => ln(`M${162 + w} ${y}H282`, P.skin, 1, 'stroke-dasharray="2 5" opacity="0.7"') + ln(`M162 ${y}H${162 + w}`, P.white, 2.8) + dot(162, y, 4.6, P.gold) + dot(162 + w, y, 4.6, P.gold)).join(''),
   spheres: () => starsC([[20, 30], [60, 22, 1.5], [250, 28], [282, 60], [16, 120], [280, 140, 1.5], [44, 152], [230, 158]]) + [[40, 15], [74, 30], [108, 46], [140, 62]].map(([rx, ry]) => `<ellipse cx="150" cy="92" rx="${rx}" ry="${ry}" fill="none" stroke="${P.skin}" stroke-width="1"/>`).join('')
@@ -684,9 +664,10 @@ const ART = {
     + codex(196, 158, 76, P.red) + codex(202, 146, 66, P.blue) + codex(194, 134, 72, P.green) + codex(204, 122, 58, P.purple) + tube('M176 170v-26', 3, P.cream) + flame(176, 144, 0.5),
   contestwin: () => wreathC(40, 46, 15) + wreathC(260, 46, 15) + wreathC(62, 112, 12, P.gold) + wreathC(238, 112, 12, P.gold) + fl('M102 170v-14h96v14z', P.stone) + ln('M102 163h96', P.dstone, 0.8)
     + F(146, 1.08, { wreath: 'gold', c1: P.white, c2: P.gold, cloak: P.purple, pose: 'hold', mid: HELD.kithara }, false, 156),
-  fiddle: () => flame(40, 170, 0.9) + flame(150, 170, 1.1) + flame(176, 170, 0.7)
-    + `<g transform="translate(92 96) rotate(-16) scale(1.5)"><ellipse cx="0" cy="-6" rx="13" ry="12" fill="${P.wood}" ${OL}/><ellipse cx="0" cy="17" rx="17" ry="15" fill="${P.wood}" ${OL}/>${fl('M-2.6 -50h5.2v36h-5.2z', P.dwood)}${dot(0, -52, 4.6, P.dwood)}${ln('M-8 5q-3 6 0 12M8 5q3 6 0 12', P.line, 1.2)}${ln('M-1.4 -46V24M1.4 -46V24', P.cream, 0.6)}</g>`
-    + ln('M36 34L148 158M148 34L36 158', P.line, 13) + ln('M36 34L148 158M148 34L36 158', P.red, 9) + instC('Kithara', 232, 94, 1.42)
+  island: () => starsC([[30, 34], [84, 26, 1.5], [214, 30], [272, 54]]) + grp(256, 140, 0.5, shipC()) + seaC(0, 300, 144) + fl('M62 170Q150 100 238 170Z', '#7A8A4E') + `<ellipse cx="98" cy="128" rx="6" ry="22" fill="${P.dgreen}" ${OL}/><ellipse cx="204" cy="132" rx="5" ry="18" fill="${P.dgreen}" ${OL}/>`
+    + F(150, 1.0, { female: 1, bun: 1, c1: P.cream, cloak: P.red, pose: 'hold', mid: HELD.lyre }, false, 138),
+  audience: () => fl('M22 170v-12h96v12z', P.stone) + ln('M22 164h96', P.dstone, 0.8) + F(68, 1.06, { wreath: 'gold', c1: P.white, c2: P.gold, cloak: P.purple, pose: 'hold', mid: HELD.kithara }, false, 158) + wavesC(134, 72)
+    + S(206, 0.95, { c1: P.blue, c2: P.gold }, true) + S(268, 0.95, { female: 1, bun: 1, c1: P.red, c2: P.gold }, true)
 };
 function frame(inner) {
   let m = ''; for (let x = 3; x < 296; x += 12) m += `M${x} 13v-7.6h9v5.2h-4.6v-2.6`;
@@ -1024,7 +1005,7 @@ const Fx = (() => {
 })();
 
 /* ================= STATE ================= */
-const KEY = 'ancient-music-odyssey-v2';
+const KEY = 'ancient-music-odyssey-v3';
 const NUM = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
 let state = { name: '', results: [], sound: true, finished: null };
 let streak = 0;
@@ -1035,7 +1016,7 @@ function clean(d) {
   return { name: typeof d.name === 'string' ? d.name.slice(0, 40) : '', results, sound: d.sound !== false, finished: typeof d.finished === 'string' ? d.finished : null };
 }
 /* Progress is written to a cookie and to localStorage; whichever copy holds more finished stops wins on load. */
-const COOKIE = 'amo_progress';
+const COOKIE = 'amo_progress3';
 function writeCookie(v) { try { document.cookie = `${COOKIE}=${encodeURIComponent(v)}; max-age=31536000; path=/; SameSite=Lax` + (location.protocol === 'https:' ? '; Secure' : ''); } catch (e) {} }
 function readCookie() { try { const m = document.cookie.match(new RegExp('(?:^|; )' + COOKIE + '=([^;]*)')); return m ? decodeURIComponent(m[1]) : null; } catch (e) { return null; } }
 function save() { const v = JSON.stringify(state); try { localStorage.setItem(KEY, v); } catch (e) {} writeCookie(v); }
@@ -1166,26 +1147,26 @@ function mc(o) {
   } };
 }
 
-/* ================= WHAT SURVIVED: drag cards to line up with their partners ================= */
-const RELICS = [
-  ['The Seikilos song', 'song', 'Carved on a marble tombstone', 'stele'],
-  ['The Delphic Hymns', 'temple', 'Cut into a stone wall', 'wall'],
-  ['The Orestes chorus', 'mask', 'A torn scrap of papyrus', 'papyrus'],
-  ['Hymns of Mesomedes', 'sun', 'Hand-copied for a thousand years', 'book'],
-  ['Sappho’s songs', 'lyre', 'Words only: one whole poem and many scraps', 'scraps'],
-  ['Homer’s epics', 'ship', 'Words only: two long poems once sung by bards', 'bard']
+/* ================= WHAT SURVIVED: drag each clue beside the piece it describes (slide 8) ================= */
+const PIECES = [['The Seikilos song', 'song'], ['The Delphic Hymns', 'temple'], ['The Orestes fragment', 'theater'], ['Hymns of Mesomedes', 'sing']];
+const CLUES = [
+  [0, 'Carved on a tombstone', 'stele'], [0, 'The oldest complete song we have', 'star'],
+  [1, 'Cut into a stone wall, with notes above the words', 'wall'], [1, 'Two hymns to Apollo', 'lyre'],
+  [2, 'A scrap of papyrus', 'papyrus'], [2, 'A chorus from a play by Euripides', 'mask'],
+  [3, 'Songs by a musician at Emperor Hadrian’s court', 'wreath'], [3, 'Recopied for centuries', 'book']
 ];
 function runMatch(ctx, done) {
-  const N = RELICS.length, left = shuffle(RELICS.map((_, i) => i));
-  let order = shuffle(left);
-  if (order.filter((e, i) => e === left[i]).length > 1) order = left.slice(1).concat(left[0]);
+  const N = CLUES.length, left = shuffle(PIECES.map((_, i) => i)), rowPiece = k => left[Math.floor(k / 2)];
+  const score = o => o.filter((c, k) => CLUES[c][0] === rowPiece(k)).length;
+  let order = shuffle(CLUES.map((_, i) => i));
+  for (let tries = 0; score(order) > 2 && tries < 30; tries++) order = shuffle(order);
   let locked = false; const marks = {};
-  const fixed = h('ol', { class: 'fixed', 'aria-label': 'Ancient music' }, left.map(e => h('li', null, icon(RELICS[e][1]), h('span', { text: RELICS[e][0] }))));
-  const list = h('ol', { class: 'sort', 'aria-label': 'How each one reached us. Line each card up with its partner.' });
+  const fixed = h('ol', { class: 'fixed', 'aria-label': 'Four pieces of music that survived' }, left.map(p => h('li', null, icon(PIECES[p][1]), h('span', { text: PIECES[p][0] }))));
+  const list = h('ol', { class: 'sort', 'aria-label': 'Clues. Each piece has two clues: line them up beside it.' });
   const go = h('button', { class: 'btn gold', type: 'button', 'data-act': 'check', text: 'Check my matches' });
-  const hint = h('p', { class: 'hint', text: 'Drag each clay card up or down until it sits beside the music it describes. The arrows move a card one place.' });
+  const hint = h('p', { class: 'hint', text: 'Each piece has two clues. Drag the clay cards up or down until both sit beside their piece. The arrows move a card one place.' });
   const review = h('div', { class: 'review', role: 'status' });
-  ctx.body.classList.add('split');
+  ctx.body.classList.add('split', 'wide');
   ctx.body.append(h('div', { class: 'match' }, fixed, list), h('div', { class: 'aside' }, hint, h('div', { class: 'row' }, go), review));
 
   function move(a, b, dir) {
@@ -1195,13 +1176,13 @@ function runMatch(ctx, done) {
   }
   function draw() {
     list.replaceChildren(...order.map((e, idx) => {
-      const txt = RELICS[e][2], beside = RELICS[left[idx]][0];
+      const txt = CLUES[e][1], beside = PIECES[rowPiece(idx)][0];
       const up = h('button', { class: 'nudge up', type: 'button', disabled: idx === 0 || locked, 'aria-label': `Move “${txt}” up` }, icon('up'));
       const dn = h('button', { class: 'nudge dn', type: 'button', disabled: idx === N - 1 || locked, 'aria-label': `Move “${txt}” down` }, icon('down'));
       up.addEventListener('click', () => move(idx, idx - 1, -1)); dn.addEventListener('click', () => move(idx, idx + 1, 1));
       const st = marks[e];
       const li = h('li', { class: 'sort-card' + (st == null ? '' : st ? ' is-correct' : ' is-wrong'), 'aria-label': `Beside ${beside}: ${txt}` + (st == null ? '' : st ? ', correct' : ', incorrect') },
-        icon(RELICS[e][3]), h('span', { class: 'ev', text: txt }),
+        icon(CLUES[e][2]), h('span', { class: 'ev', text: txt }),
         st == null ? h('span', { class: 'nudges' }, up, dn) : h('span', { class: 'mark', 'aria-hidden': 'true', text: st ? '✓' : '✗' }));
       li.addEventListener('pointerdown', ev => {
         if (locked || ev.target.closest('button') || ev.button > 0) return;
@@ -1226,19 +1207,19 @@ function runMatch(ctx, done) {
   }
   go.addEventListener('click', () => {
     locked = true; go.parentElement.hidden = true; hint.hidden = true;
-    const answer = order.slice(), earned = answer.filter((e, k) => e === left[k]).length, gap = RM ? 0 : 230;
+    const answer = order.slice(), earned = score(answer), gap = RM ? 0 : 200;
     answer.forEach((e, k) => setTimeout(() => {
-      marks[e] = e === left[k]; draw();
-      if (marks[e]) Snd.pluck(Snd.SCALE[k] * 2, { vol: 0.14 }); else Snd.tick();
+      marks[e] = CLUES[e][0] === rowPiece(k); draw();
+      if (marks[e]) Snd.pluck(Snd.SCALE[Math.min(k, 6)] * 2, { vol: 0.14 }); else Snd.tick();
     }, gap * (k + 1)));
     setTimeout(() => {
-      if (earned < N) { order = left.slice(); draw(); }
-      if (earned >= 4) { Snd.fanfare(); const r = list.getBoundingClientRect(); Fx.burst(r.left + r.width / 2, r.top + 40, 26); } else shake(ctx.panel);
+      if (earned < N) { order = left.flatMap(p => CLUES.map((_, i) => i).filter(i => CLUES[i][0] === p)); draw(); }
+      if (earned >= 6) { Snd.fanfare(); const r = list.getBoundingClientRect(); Fx.burst(r.left + r.width / 2, r.top + 40, 26); } else shake(ctx.panel);
       const cont = h('button', { class: 'btn gold', type: 'button', 'data-act': 'next', text: 'Finish this stop' });
       cont.addEventListener('click', () => done(earned, N));
       review.append(
-        h('h3', { text: `${earned} of ${N} matched.` + (earned < N ? ' The cards now sit beside their true partners.' : '') }),
-        h('p', { class: 'dim small', text: 'Almost all ancient music is lost. Only about sixty pieces survive with their notes, and most are scraps. For Homer and Sappho we have the words but no melodies, so today’s performers rebuild the music in ancient style.' }),
+        h('h3', { text: `${earned} of ${N} clues matched.` + (earned < N ? ' The cards now sit beside their true pieces.' : '') }),
+        h('p', { class: 'dim small', text: 'Four pieces of music that survived: the Seikilos song, the Delphic Hymns, the Orestes fragment, and the hymns of Mesomedes.' }),
         h('div', { class: 'row' }, cont));
       cont.focus({ preventScroll: true }); cont.scrollIntoView({ block: 'nearest' });
     }, gap * (N + 1) + (RM ? 0 : 500));
@@ -1247,17 +1228,17 @@ function runMatch(ctx, done) {
 }
 
 /* ================= STOP II: swipe ================= */
-const SCENES = [
-  ['Trumpets signal the legion to advance.', 'Rome', 'Roman horns and trumpets directed the army.', 'legion'],
-  ['A boy practices the lyre at school.', 'Greece', 'In Athens, boys learned to sing and to play the lyre.', 'school'],
-  ['A water organ plays while gladiators fight.', 'Rome', 'The Romans used the water organ to thrill the crowd at the games.', 'arena'],
-  ['A chorus sings and dances in a play by Euripides.', 'Greece', 'Greek tragedy and comedy were musical theater.', 'chorus'],
-  ['Thinkers such as Plato teach that music shapes a person’s character.', 'Greece', 'The Greeks treated music as part of every child’s education.', 'plato'],
-  ['A cornicen passes on the commander’s orders with a huge curved horn.', 'Rome', 'The cornu player stood near the Roman army’s standards.', 'cornicen'],
-  ['Singers and pipers compete for prizes at the games in Delphi.', 'Greece', 'At the Pythian Games, music was a contest, the way sports were at Olympia.', 'contest'],
-  ['Music is about scale and effect: bigger, louder, more spectacular.', 'Rome', 'Rome turned borrowed Greek music into power and spectacle.', 'spectacle'],
-  ['One word, “mousike,” covers melody, poetry, and dance together.', 'Greece', '“Mousike” meant all the arts of the Muses.', 'mousike'],
-  ['Many of the professional musicians here are slaves or former slaves, and many come from Greece.', 'Rome', 'Rome brought Greek teachers and performers home after conquering Greece.', 'imports']
+const SCENES = [   // every answer is on slide 3, "Greece studied music; Rome showed it off"
+  ['Here, music is part of education and art.', 'Greece', 'Greece: music as education and art.', 'plato'],
+  ['Here, music is about power and spectacle.', 'Rome', 'Rome: music as power and spectacle.', 'spectacle'],
+  ['A student practices the lyre.', 'Greece', 'The lyre was a Greek instrument, and students were among Greece’s musicians.', 'school'],
+  ['A tuba sounds a signal for the army.', 'Rome', 'Roman music was heard in the army, and the tuba was a Roman instrument.', 'legion'],
+  ['A water organ plays in the arena.', 'Rome', 'Roman music was heard in the arena, and the water organ was a Roman instrument.', 'arena'],
+  ['A poet sings at a banquet.', 'Greece', 'Greek music was heard at festivals, theater, and banquets, and poets were among its musicians.', 'symposium'],
+  ['Soldiers are the musicians, and one plays the curved cornu.', 'Rome', 'Rome’s musicians were soldiers and hired pros, and the cornu was a Roman instrument.', 'cornicen'],
+  ['Music fills a festival, with a kithara and an aulos.', 'Greece', 'Greek music was heard at festivals, and the kithara and aulos were Greek instruments.', 'contest'],
+  ['This place gave us scales, music theory, and music words.', 'Greece', 'Greece gave us scales, theory, and music words.', 'mousike'],
+  ['This place gave us brass signals and the organ.', 'Rome', 'Rome gave us brass signals and the organ.', 'brass']
 ];
 function swipeItem([text, answer, why, art]) {
   return { render(slot, finish) {
@@ -1300,15 +1281,15 @@ const runScenes = (ctx, done) => runSequence(ctx, shuffle(SCENES).map(swipeItem)
 
 /* ================= STOP III: songs ================= */
 const GENRES = [['Epic', 'helmet'], ['Lyric', 'lyre'], ['Hymn', 'temple'], ['Theater chorus', 'mask'], ['Victory ode', 'wreath'], ['Skolion', 'cup']];
-const OCCASIONS = [
-  ['A bard sings the story of Odysseus’s ten-year journey home, all from memory. It could take days.', 'Epic', 'An epic is a very long poem about heroes and gods, sung by a bard with a lyre.', 'odyssey'],
-  ['A singer performs the Iliad, the long tale of the heroes of the Trojan War.', 'Epic', 'Homer’s Iliad and Odyssey are the two most famous epics.', 'iliad'],
-  ['On the island of Lesbos, Sappho sings a short, personal song about love and friendship.', 'Lyric', 'Lyric means “for the lyre.” It gave us the word “lyrics.”', 'sappho'],
-  ['A chorus walks in procession to the temple, singing praise to Apollo.', 'Hymn', 'A hymn praises a god. A hymn to Apollo was called a paean.', 'procession'],
-  ['A song of praise to the god of music is cut into a stone wall at Delphi, with the notes above the words.', 'Hymn', 'The two Delphic Hymns to Apollo were carved there, with the notes written above the words.', 'wallsong'],
-  ['An athlete has won at the Olympic Games. His family hires the poet Pindar to compose a song for the celebration back home.', 'Victory ode', 'A dancing chorus performed the victory ode, a bit like a team fight song.', 'victory'],
-  ['At a dinner party, a lyre is passed around the room and each guest takes a turn singing.', 'Skolion', 'A skolion was a short song for a symposium, like karaoke with friends.', 'symposium'],
-  ['Masked performers sing and dance together on the round orchestra while an aulos player keeps the rhythm.', 'Theater chorus', 'The chorus of 12 to 15 reacted to the story, the way a movie soundtrack tells you how to feel.', 'orchestra']
+const OCCASIONS = [   // slides 4, 6 and 7
+  ['A bard sings Homer’s Iliad from memory.', 'Epic', 'Epic: long stories of heroes. Bards sang Homer’s Iliad and Odyssey from memory.', 'iliad'],
+  ['A long story of heroes from Homer’s Odyssey, performed aloud as a song.', 'Epic', 'Epic: long stories of heroes. Bards sang Homer’s Iliad and Odyssey from memory.', 'odyssey'],
+  ['Sappho sings a short, personal song about love and friendship.', 'Lyric', 'Lyric: short, personal songs. Poets like Sappho sang of love and friendship.', 'sappho'],
+  ['One singer, one lyre, and a short, personal song.', 'Lyric', 'Lyric means a song for the lyre. It gave us the word “lyrics.”', 'island'],
+  ['A chorus sings for the gods. Today the song is for Apollo.', 'Hymn', 'A hymn is sung for the gods, by a chorus or a soloist. Hymns to Apollo are the example.', 'procession'],
+  ['A dancing chorus sings for a winning athlete. Pindar composed the song.', 'Victory ode', 'A victory ode is sung for winning athletes by a dancing chorus, as in Pindar’s odes.', 'victory'],
+  ['At a banquet, each guest sings in turn, with a lyre.', 'Skolion', 'A skolion is sung for banquet guests, by each guest in turn.', 'symposium'],
+  ['Twelve to fifteen performers sing and dance together on the round dancing floor and react to the story.', 'Theater chorus', 'In Greek theater the chorus sang and danced, and an aulos player led the singing.', 'orchestra']
 ];
 const runGenres = (ctx, done) => runSequence(ctx, shuffle(OCCASIONS).map(([prompt, answer, why, art]) => mc({
   eyebrow: 'Which kind of song fits?', prompt, answer, art, layout: 'meds', explain: `${answer}. ${why}`,
@@ -1378,61 +1359,59 @@ function monoTask({ prompt, target, name, explain }) {
       Snd.pluck(BASE, { vol: 0.2 }); Snd.pluck(BASE * 12 / target, { vol: 0.24, delay: 0.45, echo: 0.3 }); m.vibrate();
       finish(right ? 1 : 0, right ? explain : `You left ${frac(mine)} sounding. ${explain}`, { quiet: true });
     });
-    slot.append(h('p', { class: 'eyebrow', text: 'Monochord challenge' }), h('div', { class: 'scroll' }, h('p', { text: prompt })),
+    slot.append(h('p', { class: 'eyebrow', text: 'One-string test' }), h('div', { class: 'scroll' }, h('p', { text: prompt })),
       m.el, slider, h('div', { class: 'row' }, readout, state.sound ? null : h('span', { class: 'hint', text: 'Sound is off. Turn it on at the top right to hear the string.' })),
       h('div', { class: 'row' }, bWhole, bTarget, bMine, lock));
     paint();
   } };
 }
-const runMonochord = (ctx, done) => runSequence(ctx, [
-  monoTask({ prompt: 'Drag the bridge so the string sounds one octave higher than the whole string.', target: 6, name: 'octave', explain: 'Half of the string sounds one octave higher: a ratio of 2 to 1.' }),
-  monoTask({ prompt: 'Now make the string sound a fifth higher than the whole string.', target: 8, name: 'fifth', explain: 'Two-thirds of the string sounds a fifth higher: a ratio of 3 to 2.' }),
-  monoTask({ prompt: 'Last one: make the string sound a fourth higher than the whole string.', target: 9, name: 'fourth', explain: 'Three-quarters of the string sounds a fourth higher: a ratio of 4 to 3.' }),
-  mc({ eyebrow: 'Quick check', art: 'twothirds', prompt: 'You press a string so that two-thirds of it sounds. Which ratio describes that interval?', options: ['2 : 1', '3 : 2', '4 : 3'], answer: '3 : 2', layout: 'three', explain: 'Two-thirds of the string is a fifth, a ratio of 3 to 2. The simplest fractions make the sounds people find most pleasing together.' }),
-  mc({ eyebrow: 'Story or science?', art: 'hammers', prompt: 'Ancient writers said Pythagoras made his discovery when he heard blacksmiths’ hammers of different weights ring different notes. Does the hammer story work in real life?', options: ['Yes. A hammer twice as heavy rings an octave lower.', 'No. The ratios work for string lengths, not hammer weights.', 'Yes, but only with bronze hammers.'], answer: 'No. The ratios work for string lengths, not hammer weights.', layout: 'stack', explain: 'It is a great story, but hammer weight does not produce those intervals. String lengths do.' })
+const runMonochord = (ctx, done) => runSequence(ctx, [   // slide 5
+  monoTask({ prompt: 'Drag the bridge so the string sounds one octave higher than the whole string.', target: 6, name: 'octave', explain: 'Half of a string sounds one octave higher than the whole string: 2 to 1.' }),
+  monoTask({ prompt: 'Now make the string sound a fifth higher than the whole string.', target: 8, name: 'fifth', explain: 'Two-thirds of the string sounds a fifth higher: 3 to 2.' }),
+  monoTask({ prompt: 'Last one: make the string sound a fourth higher than the whole string.', target: 9, name: 'fourth', explain: 'Three-quarters of the string sounds a fourth higher: 4 to 3.' }),
+  mc({ eyebrow: 'Quick check', art: 'twothirds', prompt: 'You press a string so that two-thirds of it sounds. Which ratio goes with that?', options: ['2 : 1', '3 : 2', '4 : 3'], answer: '3 : 2', layout: 'three', explain: 'Two-thirds of the string is a fifth: 3 to 2. Simple fractions sound good.' }),
+  mc({ eyebrow: 'Why it matters', art: 'spheres', prompt: 'Music became a science. Which subjects did the Greeks study music alongside?', options: ['Math and astronomy', 'Poetry and dance', 'Law and medicine'], answer: 'Math and astronomy', layout: 'three', explain: 'The Greeks studied music alongside math and astronomy. We still tune instruments with the same ratios.' })
 ], done);
 
-/* ================= STOP V: instruments ================= */
+/* ================= INSTRUMENTS (slides 9 and 10) ================= */
 const INSTRUMENTS = [
-  ['Lyre', 'My body is a tortoise shell and I have seven strings. Every Greek student learns me at school.', 'The lyre’s strings are plucked with a pick.'],
-  ['Kithara', 'I am a big wooden concert lyre. Professionals play me standing up, and the word “guitar” comes from my name.', 'The kithara’s strings are plucked, and its wooden sound box makes it louder than a lyre.'],
-  ['Aulos', 'I am two pipes played at the same time, one in each hand. People call me a flute, but I sound like a loud, buzzing oboe.', 'Each pipe of the aulos has a reed that vibrates.'],
-  ['Syrinx', 'I am a row of tubes of different lengths, bound together. Shepherds play me, and so does the god Pan.', 'The syrinx, or panpipes, sounds when the player blows across the tops of the tubes.'],
-  ['Krotala', 'We are a pair of wooden clappers, one in each hand. We keep time for dancers.', 'Krotala are struck together, like castanets.'],
-  ['Tuba', 'I am a straight bronze trumpet about four feet long. I tell the Roman infantry to advance or retreat.', 'The player buzzes their lips into the tube. The Roman tuba is not the modern tuba.'],
-  ['Cornu', 'I am a bronze horn bent into a giant letter G that wraps around my player’s body.', 'The player buzzes their lips into about ten feet of bronze tubing.'],
-  ['Hydraulis', 'Water keeps my air pressure steady. I am the first keyboard instrument, and I play at the gladiator games.', 'The hydraulis pushes air through pipes, controlled by keys. Every pipe organ descends from it.']
+  ['Lyre', 'I have a tortoise-shell body and seven strings. I am taught in school.', 'The lyre is a string instrument.'],
+  ['Kithara', 'I am a big wooden concert lyre for professional players.', 'The kithara is a string instrument.'],
+  ['Aulos', 'I am two reed pipes played at once. I am loud and exciting.', 'The aulos is a wind instrument.'],
+  ['Syrinx', 'I am a row of tubes, played by shepherds. People also call me panpipes.', 'The syrinx is a wind instrument.'],
+  ['Krotala', 'We are clappers. Along with a frame drum, we keep time for dancers.', 'Krotala are percussion: they are struck.'],
+  ['Tuba', 'I am a straight bronze trumpet about four feet long, for battle signals.', 'The tuba was a Roman army instrument.'],
+  ['Cornu', 'I am a huge curved horn that wraps around my player’s body.', 'The cornu was a Roman army instrument.'],
+  ['Hydraulis', 'I am the water organ, the first keyboard instrument. I am played at the games.', 'The hydraulis was heard in the Roman arena.']
 ];
 function runInstruments(ctx, done) {
   const names = INSTRUMENTS.map(x => x[0]);
+  const tiles = list => shuffle(list).map(value => ({ value, art: plaque(value) }));
   const riddles = shuffle(INSTRUMENTS).map(([name, clue, how]) => mc({
     eyebrow: 'Which instrument is speaking? Tap one to hear it.', prompt: clue, answer: name, voice: true, layout: 'plaques',
-    options: shuffle([name, ...shuffle(names.filter(n => n !== name)).slice(0, 3)]).map(value => ({ value, art: plaque(value) })),
-    onPick: v => Snd.voice(v), explain: `That is the ${name.toLowerCase()}. ${how}`
+    options: tiles([name, ...shuffle(names.filter(n => n !== name)).slice(0, 3)]), onPick: v => Snd.voice(v), explain: `That is the ${name.toLowerCase()}. ${how}`
   }));
   runSequence(ctx, riddles.concat([
-    mc({ eyebrow: 'How does it make sound?', art: 'aulosArt', prompt: 'How does the aulos make its sound?', answer: 'A reed vibrates in each pipe', layout: 'stack',
-      options: shuffle(['A reed vibrates in each pipe', 'The player buzzes their lips', 'Strings are plucked with a pick', 'Air is blown across open tubes']),
-      explain: 'A reed vibrates in each pipe. That is why the aulos sounded more like an oboe than a flute.' }),
-    mc({ eyebrow: 'How does it make sound?', art: 'brass', prompt: 'How do the Roman tuba and cornu make their sound?', answer: 'The player buzzes their lips in a bronze tube', layout: 'stack',
-      options: shuffle(['The player buzzes their lips in a bronze tube', 'A reed vibrates in the mouthpiece', 'Water pushes air through pipes', 'The bronze is struck with a stick']),
-      explain: 'The player buzzes their lips in a bronze tube. These valveless signal horns are the ancestors of the bugle, trumpet, and horn.' })
+    mc({ eyebrow: 'Two gods, two sounds. Tap one to hear it.', prompt: 'Apollo says: “My instrument means calm and order.” Which is it?', answer: 'Lyre', voice: true, layout: 'plaques',
+      options: tiles(['Lyre', 'Aulos', 'Kithara', 'Syrinx']), onPick: v => Snd.voice(v), explain: 'Apollo’s lyre meant calm and order.' }),
+    mc({ eyebrow: 'Two gods, two sounds. Tap one to hear it.', prompt: 'Dionysus says: “My instrument means excitement.” Which is it?', answer: 'Aulos', voice: true, layout: 'plaques',
+      options: tiles(['Aulos', 'Lyre', 'Krotala', 'Syrinx']), onPick: v => Snd.voice(v), explain: 'The aulos of Dionysus meant excitement.' })
   ]), done);
 }
 
 /* ================= STOP VI: voices ================= */
 const PEOPLE = ['Sappho', 'Pythagoras', 'Seikilos', 'Mesomedes', 'Nero'];
-const VOICES = [
-  ['The Greeks admired my songs so much that they called me “the tenth Muse.”', 'Sappho', 'She sang her own lyric poems to the lyre on the island of Lesbos.', 'tenth'],
-  ['Scholars collected my songs into nine books, but only one complete poem survives, and none of my melodies.', 'Sappho', 'We have many of her words, but her music is lost.', 'books'],
-  ['I linked musical notes to simple number ratios. My name is on a triangle theorem too.', 'Pythagoras', 'He is credited with finding the string ratios for the octave, fifth, and fourth.', 'ratio'],
-  ['My followers and I believed the planets make music as they move.', 'Pythagoras', 'That idea is called the music of the spheres.', 'spheres'],
-  ['Almost nothing is known about me except my name and one song, which I had carved on a grave marker.', 'Seikilos', 'He had it carved in stone, with the notes written above the words.', 'grave'],
-  ['My song is only a few lines long, but it is the oldest complete song that survives.', 'Seikilos', 'Its message: enjoy life while you have it.', 'shortsong'],
-  ['I was born in Crete, a freed slave who became the favorite musician of the emperor Hadrian.', 'Mesomedes', 'He sang his own hymns while playing the kithara.', 'hadrian'],
-  ['My hymns were recopied by hand for more than a thousand years. That is how their melodies reached you.', 'Mesomedes', 'His Hymn to the Sun is one of the few ancient pieces we can still perform.', 'scribe'],
-  ['I ruled Rome, trained as a singer, and entered public contests in Greece, which I always “won.”', 'Nero', 'He was a Roman emperor who trained seriously as a singer and kithara player.', 'contestwin'],
-  ['People say I fiddled while Rome burned. Impossible. The fiddle would not exist for centuries.', 'Nero', 'He sang and played the kithara. The fiddle story is a myth.', 'fiddle']
+const VOICES = [   // every line is on slide 11, "Four names to remember"
+  ['I am a Greek poet-singer. I sang my own lyric poems.', 'Sappho', 'Sappho was a Greek poet-singer who sang her own lyric poems.', 'sappho'],
+  ['I sang my poems on the island of Lesbos.', 'Sappho', 'Sappho sang her own lyric poems on the island of Lesbos.', 'island'],
+  ['I am a Greek mathematician.', 'Pythagoras', 'Pythagoras was a Greek mathematician.', 'ratio'],
+  ['I linked musical notes to simple number ratios.', 'Pythagoras', 'Pythagoras linked musical notes to simple number ratios.', 'twothirds'],
+  ['I am a Greek songwriter. I had my song carved in stone.', 'Seikilos', 'Seikilos had his song carved in stone.', 'shortsong'],
+  ['My song is the oldest complete song.', 'Seikilos', 'The song of Seikilos is the oldest complete song.', 'grave'],
+  ['I was musician to an emperor. I wrote hymns for Hadrian.', 'Mesomedes', 'Mesomedes wrote hymns for the emperor Hadrian.', 'hadrian'],
+  ['My hymns survive with their melodies.', 'Mesomedes', 'Mesomedes wrote hymns for Hadrian that survive with their melodies.', 'scribe'],
+  ['I was an emperor, and even I performed.', 'Nero', 'Even an emperor performed: Nero.', 'audience'],
+  ['I sang and played the kithara in public contests.', 'Nero', 'Nero sang and played the kithara in public contests.', 'contestwin']
 ];
 const runPeople = (ctx, done) => runSequence(ctx, shuffle(VOICES).map(([prompt, answer, why, art]) => mc({
   eyebrow: 'Who is speaking?', prompt, answer, art, voice: true, layout: 'busts', explain: `That is ${answer}. ${why}`,
@@ -1440,16 +1419,15 @@ const runPeople = (ctx, done) => runSequence(ctx, shuffle(VOICES).map(([prompt, 
 })), done);
 
 /* ================= STOP VII: inscription ================= */
-const SENTENCES = [
-  ['The word “music” means the art of the ', 'Muses', '.', 'song'],
-  ['Our word “lyrics” comes from the ', 'lyre', ', the instrument singers played.', 'sing'],
-  ['In a Greek theater, the orchestra was not a group of players. It was the ', 'dancing floor', '.', 'theater'],
-  ['The word “guitar” comes from the name of the ', 'kithara', '.', 'guitar'],
-  ['The Roman water organ is the ancestor of the ', 'pipe organ', '.', 'Hydraulis'],
-  ['The Roman tuba and cornu led to the trumpets and horns of today’s ', 'brass section', '.', 'Cornu'],
-  ['When we tune octaves and fifths, we still use the string ', 'ratios', ' that Pythagoras worked out.', 'strings']
+const SENTENCES = [   // slide 13, plus the two word origins on slides 4 and 6
+  ['The words music, melody, harmony, rhythm, and chorus all come from ', 'Greek', '.', 'song'],
+  ['“Lyric” means a song for the ', 'lyre', '. It gave us the word “lyrics.”', 'sing'],
+  ['In a Greek theater, the orchestra was the ', 'dancing floor', ': the round space for the chorus.', 'theater'],
+  ['The water organ became the ', 'pipe organ', '.', 'Hydraulis'],
+  ['The Roman tuba and cornu became today’s trumpets, horns, and the ', 'brass section', '.', 'Cornu'],
+  ['We still tune octaves and fifths with Pythagoras’s string ', 'ratios', '.', 'strings']
 ];
-const EXTRAS = ['stage', 'aulos', 'string section'];
+const EXTRAS = ['Latin', 'flute', 'stage', 'string section'];
 function runWords(ctx, done) {
   const bank = shuffle(SENTENCES.map(x => x[1]).concat(EXTRAS)), fills = SENTENCES.map(() => null);
   let active = 0, checked = false;
@@ -1488,7 +1466,7 @@ function runWords(ctx, done) {
     const cont = h('button', { class: 'btn gold', type: 'button', 'data-act': 'next', text: 'Finish this stop' });
     cont.addEventListener('click', () => done(earned, SENTENCES.length));
     review.append(h('h3', { text: `${earned} of ${SENTENCES.length} gaps restored correctly.` }),
-      h('p', { class: 'dim small', text: 'Music, melody, harmony, rhythm, chorus, orchestra, and lyric are all Greek words. Nearly every everyday music word is.' }),
+      h('p', { class: 'dim small', text: 'These are on the slides “Ancient ideas we still use today,” “Epic and lyric,” and “Greek theater.”' }),
       h('div', { class: 'row' }, cont));
     cont.focus({ preventScroll: true }); cont.scrollIntoView({ block: 'nearest' });
   });
@@ -1496,14 +1474,14 @@ function runWords(ctx, done) {
 }
 
 /* ================= THE SEVEN STOPS ================= */
-const STOPS = [
+const STOPS = [   // in slide order: 3, 4-7, 5, 8, 9-10, 11, 13
   { title: 'Greece or Rome?', place: 'The harbor at dawn', scene: 'L1', run: runScenes, brief: 'Greece studied music. Rome showed it off. Send each scene to the place it belongs.' },
-  { title: 'What Survived?', place: 'Among the ruins', scene: 'L2', run: runMatch, brief: 'Almost all ancient music is lost. Match each treasure to the way it reached us.' },
-  { title: 'A Song for Every Occasion', place: 'The festival at Delphi', scene: 'L3', run: runGenres, brief: 'You are the festival’s music director. Choose the right kind of song for each scene.' },
-  { title: 'Pythagoras’s String', place: 'Under the music of the spheres', scene: 'L4', run: runMonochord, brief: 'Simple fractions of a string make the notes that sound best together. Listen, then lock in your answer.' },
-  { title: 'Name That Instrument', place: 'The instrument maker’s stall', scene: 'L5', run: runInstruments, brief: 'Eight instruments describe themselves. Find each one, then explain how two of them make sound.' },
-  { title: 'Who Is Speaking?', place: 'The hall of voices', scene: 'L6', run: runPeople, brief: 'Very few ancient musicians are known by name. Match each voice to its speaker.' },
-  { title: 'Echoes Today', place: 'Rome at sunset', scene: 'L7', run: runWords, brief: 'Ancient ideas live in the music we make now. Restore the inscription. Three fragments are left over.' }
+  { title: 'A Song for Every Occasion', place: 'The festival at Delphi', scene: 'L3', run: runGenres, brief: 'Epic, lyric, hymn, theater chorus, victory ode, or skolion? Choose the right kind of song for each scene.' },
+  { title: 'Pythagoras’s String', place: 'Pythagoras’s workshop', scene: 'L4', run: runMonochord, brief: 'Pythagoras found the math in music: simple fractions of a string sound good. Listen, then lock in your answer.' },
+  { title: 'What Survived?', place: 'Among the ruins', scene: 'L2', run: runMatch, brief: 'Four pieces of ancient music survived. Drag each clue beside the piece it describes.' },
+  { title: 'Name That Instrument', place: 'The instrument maker’s stall', scene: 'L5', run: runInstruments, brief: 'Eight instruments describe themselves. Find each one, then give two gods their instruments.' },
+  { title: 'Who Is Speaking?', place: 'The hall of voices', scene: 'L6', run: runPeople, brief: 'Four names to remember, and one emperor. Match each voice to its speaker.' },
+  { title: 'Echoes Today', place: 'Rome at sunset', scene: 'L7', run: runWords, brief: 'Ancient ideas we still use today. Restore the inscription. Four fragments are left over.' }
 ];
 
 /* ================= SCREENS ================= */
@@ -1525,7 +1503,7 @@ function showTitle() {
       h('li', null, icon('wreath'), h('b', { text: 'Claim your laurels' }), 'The seven grades are averaged')),
     n ? null : h('div', { class: 'field' }, h('label', { for: 'student-name', text: 'Your name (shown on your final report)' }), name),
     h('div', { class: 'row center' }, cont, begin),
-    h('p', { class: 'dim small', text: 'Best with sound on. Stop IV asks you to listen. Your progress is saved on this device after every stop.' })));
+    h('p', { class: 'dim small', text: 'Best with sound on. Stop III asks you to listen. Your progress is saved on this device after every stop.' })));
 }
 
 function mapData(narrow) {
