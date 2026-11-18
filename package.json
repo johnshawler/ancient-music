@@ -1,0 +1,11 @@
+{
+  "name": "ancient-music-odyssey",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.164.0"
+  }
+}
