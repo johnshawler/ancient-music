@@ -1,8 +1,8 @@
 {
-  // The "greece" Worker serves public/index.html at ancient.johnshawler.com.
+  // The "greece" Worker serves public/index.html at greece.johnshawler.com.
   "name": "greece",
   "main": "src/index.js",
   "compatibility_date": "2026-11-18",
   "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }],
-  "routes": [{ "pattern": "ancient.johnshawler.com", "custom_domain": true }]
+  "routes": [{ "pattern": "greece.johnshawler.com", "custom_domain": true }]
 }

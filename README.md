@@ -23,12 +23,23 @@ npm run dev
 ## Deploy
 
 The site is a Cloudflare Worker named `greece` that serves the page at
-`ancient.johnshawler.com` (see `wrangler.jsonc` and `src/index.js`).
+`greece.johnshawler.com` (see `wrangler.jsonc` and `src/index.js`).
 
 ```bash
 npm run deploy
 ```
 
-Wrangler reads a Cloudflare API token from `CLOUDFLARE_API_TOKEN`. The token
-needs permission to edit the `greece` Worker, and zone access to
-`johnshawler.com` if Wrangler is to attach the custom domain itself.
+Wrangler reads a Cloudflare API token from `CLOUDFLARE_API_TOKEN`. `npm run
+deploy` uploads the code and also sets the custom domain, so it needs a token
+with zone access to `johnshawler.com`.
+
+With a token that can only edit the `greece` Worker, publish the code alone and
+leave the domain as it is:
+
+```bash
+npx wrangler versions upload
+```
+
+```bash
+npx wrangler versions deploy
+```
