@@ -1,8 +1,12 @@
 {
-  // The "greece" Worker serves public/index.html at greece.johnshawler.com.
+  // The "greece" Worker serves two games, chosen by hostname (see src/index.js):
+  //   greece.johnshawler.com -> public/index.html, iliad.johnshawler.com -> public/iliad.html
   "name": "greece",
   "main": "src/index.js",
   "compatibility_date": "2026-11-18",
   "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }],
-  "routes": [{ "pattern": "greece.johnshawler.com", "custom_domain": true }]
+  "routes": [
+    { "pattern": "greece.johnshawler.com", "custom_domain": true },
+    { "pattern": "iliad.johnshawler.com", "custom_domain": true }
+  ]
 }
